@@ -1,0 +1,122 @@
+<div class="container ">
+    <div class="card back-card mt-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+
+                <h3 class="card-title">Batches</h3>
+                <input hidden type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
+
+                <!-- <button (click)="csvReader.click()" type="button" class="btn btn-light" style="border-radius: 50px; color:#0079c9;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"></path>
+                      </svg>
+
+                    Upload batch
+                </button> -->
+
+                <button (click)="open(content)" type="button" class="btn btn-light" style="border-radius: 50px; color:#0079c9;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"></path>
+                      </svg>
+
+                    Upload batch
+                </button>
+
+                <ng-template #content let-modal>
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modal-basic-title">Select batch file type to upload</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div *ngIf="!isFileSelected || fileSelected == null; else bodyAfterSelectFile" class="btn-group-vertical w-100" role="group" aria-label="Basic radio toggle button group">
+                            <div class="col-12">
+                                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                                <label class="btn " for="btnradio1">
+                                    <h5>Backbase SEPA CT</h5>
+                                    <label class="btn " for="btnradio1">Up to 100 Mb files in *.csv format.</label>
+                                </label>
+                            </div>
+                            <div class="col-12">
+                                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                                <label class="btn " for="btnradio2">
+                                    <h5>ACH Credit (Balanced)</h5>
+                                    <label class="btn " for="btnradio2">Up to 50 Mb files in *.ach format.</label>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ng-template #bodyAfterSelectFile>
+                        <div class="d-flex justify-content-between">
+                            <div class="col-8">
+                                <strong> {{fileSelected.name || ''}} </strong>
+                                <p>Last modified: {{ fileSelected.lastModifiedDate | date: 'medium' || ''}}</p>
+
+                            </div>
+                            <div class="col-4">
+                                <span>{{ fileSelected.size || ''}} bytes</span>
+
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" (click)="modal.close('Save click')">Cancel</button>
+                        <button *ngIf="!fileSelected" type="button" class="btn btn-outline-primary" (click)="csvReader.click()">Next</button>
+                        <button *ngIf="fileSelected" type="button" class="btn btn-outline-primary" (click)="addFileToList()">Confirm</button>
+                    </div>
+                </ng-template>
+            </div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page">Manage batches</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">My uploads</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="container front-div bg-light shadow pb-3 table-responsive">
+    <table class="table ">
+        <thead>
+            <tr>
+                <th scope="col">File name </th>
+                <th scope="col">Size </th>
+                <th scope="col">Batch type </th>
+                <th scope="col"># of batches </th>
+                <th scope="col">Uploaded on </th>
+                <th scope="col">Status </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let file of files;let i = index;">
+                <td> <span>{{file.name}}</span> </td>
+                <td> <span>{{file.size}} KB</span> </td>
+                <td> <span>Backbase SEPA</span> </td>
+                <td> <span>1</span> </td>
+                <td> <span>{{dateNow | date: 'medium'}}</span> </td>
+                <td> <span>Processed</span> </td>
+            </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="">1</a></li>
+            <li class="page-item"><a class="page-link" href="">2</a></li>
+            <li class="page-item"><a class="page-link" href="">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
