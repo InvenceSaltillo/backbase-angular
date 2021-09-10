@@ -1,4 +1,4 @@
-<div class="container pt-3">
+<!-- <div class="container pt-3">
 
     <input type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
 
@@ -16,11 +16,11 @@
             <tr *ngFor="let record of records;let i = index;">
                 <td> <span>{{record.cuenta}}</span> </td>
                 <td> <span>{{record.cuentaFinal}}</span> </td>
-                <td> <span>{{record.moneda}}</span> </td>
+                <td> <span>{{record.moneda | myCurrency}}</span> </td>
                 <td> <span>{{record.descripcion}}</span> </td>
-                <td> <span>{{record.deposito}}</span> </td>
+                <td> <span>{{record.deposito }}</span> </td>
             </tr>
         </tbody>
     </table>
-</div>
-<!-- <router-outlet></router-outlet> -->
+</div> -->
+<router-outlet></router-outlet>

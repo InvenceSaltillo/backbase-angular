@@ -19,8 +19,19 @@
 }
 
 .front-div {
-    width: 75%;
+    width: 100%;
     position: relative;
-    top: -50px;
+    top: 20px;
     border-radius: 1.25rem;
+}
+
+.my-button {
+    border-radius: 50px;
+    background-color: white;
+    color: cornflowerblue;
+    width: 100px;
+}
+
+.rounded-button {
+    border-radius: 100px;
 }

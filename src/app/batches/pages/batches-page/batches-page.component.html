@@ -1,18 +1,10 @@
-<div class="container ">
-    <div class="card back-card mt-3">
+<div class=" ">
+    <div class="card back-card m-3">
         <div class="card-body">
             <div class="d-flex justify-content-between">
 
                 <h3 class="card-title">Batches</h3>
                 <input hidden type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
-
-                <!-- <button (click)="csvReader.click()" type="button" class="btn btn-light" style="border-radius: 50px; color:#0079c9;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"></path>
-                      </svg>
-
-                    Upload batch
-                </button> -->
 
                 <button (click)="open(content)" type="button" class="btn btn-light" style="border-radius: 50px; color:#0079c9;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
@@ -22,6 +14,10 @@
                     Upload batch
                 </button>
 
+
+                <!-- ======================================================================
+                    MODAL UPLOAD BATCH
+                ===========================================================================-->
                 <ng-template #content let-modal>
                     <div class="modal-header">
                         <h4 class="modal-title" id="modal-basic-title">Select batch file type to upload</h4>
@@ -29,14 +25,14 @@
                     <div class="modal-body">
 
                         <div *ngIf="!isFileSelected || fileSelected == null; else bodyAfterSelectFile" class="btn-group-vertical w-100" role="group" aria-label="Basic radio toggle button group">
-                            <div class="col-12">
+                            <div class="col-12" (click)="batchType = 'Backbase SEPA'">
                                 <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
                                 <label class="btn " for="btnradio1">
                                     <h5>Backbase SEPA CT</h5>
                                     <label class="btn " for="btnradio1">Up to 100 Mb files in *.csv format.</label>
                                 </label>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12" (click)="batchType = 'ACH Credit'">
                                 <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
                                 <label class="btn " for="btnradio2">
                                     <h5>ACH Credit (Balanced)</h5>
@@ -67,56 +63,211 @@
                     </div>
                 </ng-template>
             </div>
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page">Manage batches</a>
+
+
+            <!-- ======================================================================
+                MANAGE BATCHES TAB
+            ===========================================================================-->
+            <ul ngbNav #nav="ngbNav" [(activeId)]="active" class=" nav nav-tabs">
+                <li [ngbNavItem]="1" class="nav-item">
+                    <a ngbNavLink aria-current="page">Manage batches</a>
+
+                    <ng-template ngbNavContent>
+
+                        <div *ngIf="batchSelected === undefined; else batchDetail" class="p-3 front-div bg-light shadow pb-3 table-responsive">
+
+
+                            <div class="row g-3 flex align-items-center">
+                                <div class="col-auto">
+                                    <div class="input-group mb-3 mt-3 ">
+                                        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+
+                                        <input type="text" class="form-control" placeholder="Search" aria-describedby="basic-addon1">
+                                    </div>
+
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-primary mb-3 mt-3 my-button"><i class="bi bi-filter"></i> Filter</button>
+                                </div>
+                            </div>
+
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Status </th>
+                                        <th scope="col">Name, Type </th>
+                                        <th scope="col">Your account </th>
+                                        <th scope="col">Credits </th>
+                                        <th scope="col">Exec. date on </th>
+                                        <th scope="col"> </th>
+                                        <th scope="col"> </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let batch of batches;let i = index;" style="cursor: pointer;">
+                                        <td (click)="batchSelected = batch">
+                                            <h5><span class="badge bg-success">Acc</span></h5>
+                                        </td>
+                                        <td (click)="batchSelected = batch" style="width: 30%"> <span> <strong>Tijmen Struijk HPB DEMO - Batch Payment CB - {{ batch.uploadedOn | date: 'medium'}}</strong>  <p class="text-muted">{{ batch.type}}</p></span></td>
+                                        <td (click)="batchSelected = batch"> <span>{{batch.currency! | myCurrency}} Current Account UQLG812 <p class="text-muted">(NL77 RABO 9627 9945 02)</p></span> </td>
+                                        <td (click)="batchSelected = batch" align="right"> <span>{{ batch.credits }} credits: <p>{{batch.currency! | myCurrency}} {{ batch.total | number : '4.2'}}</p> </span> </td>
+                                        <td (click)="batchSelected = batch"> <span>{{batch.uploadedOn | date: 'medium'}}</span> </td>
+                                        <td>
+                                            <button type="button" class="btn btn-outline-success rounded-button btn-sm"><i class="bi bi-check2"></i></button>
+                                            <button type="button" class=" ml-2 btn btn-outline-danger rounded-button btn-sm"><i class="bi bi-x"></i></button>
+                                        </td>
+                                        <td>
+                                            <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
+                                                <button class="btn mr-2" id="dropdownManual" ngbDropdownAnchor (focus)="myDrop.toggle()">Actions</button>
+                                                <div ngbDropdownMenu aria-labelledby="dropdownManual">
+                                                    <button ngbDropdownItem>Cancel</button>
+                                                    <button ngbDropdownItem>Delete</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ng-template>
+
+                    <ng-template #batchDetail>
+
+                        <div class="p-3 front-div bg-light shadow pb-3 table-responsive">
+
+                            <div class="row g-3 flex justify-content-between">
+                                <div class="col-3">
+                                    <button (click)="batchSelected = undefined" type="button" class="btn btn-light w-50" style="border-radius: 50px; color:#0079c9;">
+                                        <i class="bi bi-arrow-left"></i>
+                                        Back to list
+                                    </button>
+                                </div>
+                                <div class="col-2" align="right">
+                                    <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
+                                        <button class="btn mr-2" id="dropdownManual" ngbDropdownAnchor (focus)="myDrop.toggle()">Actions</button>
+                                        <div ngbDropdownMenu aria-labelledby="dropdownManual">
+                                            <button ngbDropdownItem>Cancel</button>
+                                            <button ngbDropdownItem>Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row g-3 flex justify-content-between">
+                                <div class="col-10">
+                                    <h3>Tijmen Struijk HPB DEMO - Batch Payment CB - {{ batchSelected!.uploadedOn | date: 'medium'}}</h3>
+                                </div>
+                                <div class="col-2 text-end">
+                                    <h5><span class="badge bg-success">Accepted</span></h5>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 flex justify-content-between">
+                                <div class="col-10">
+                                    <span>{{ batchSelected!.file!.name}} uploaded by <strong class="text-muted">Cesar Riojas</strong> on {{ batchSelected!.uploadedOn | date: 'medium'}}</span>
+                                </div>
+                                <div class="col-2 text-end">
+                                    <i class="bi bi-calendar4-event"></i> {{ batchSelected!.uploadedOn | date: 'mediumDate'}}
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row g-3 flex justify-content-between">
+                                <div class="col-8">
+                                    <i class="bi bi-app"></i>
+                                    <strong> Your account: </strong> <span>{{batchSelected!.currency! | myCurrency}} Current Account UQLG812 <span class="text-muted">(NL77 RABO 9627 9945 02)</span> </span>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <span>{{ batchSelected!.credits }} credits</span>
+                                    <p><strong>{{batchSelected!.currency! | myCurrency}} {{ batchSelected!.total | number : '4.2'}}</strong></p>
+
+                                </div>
+                            </div>
+
+
+                            <table class="table table-hover mt-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Status </th>
+                                        <th scope="col">Counterparty </th>
+                                        <th scope="col">Payment Description </th>
+                                        <th class="text-end" scope="col">Credits </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let record of records;let i = index;" style="cursor: pointer;">
+                                        <td>
+                                            <h5><span class="badge bg-success">Acc</span></h5>
+                                        </td>
+                                        <td>
+                                            <strong>Annie Stevens</strong>
+                                            <p> 72gKoPBUDJ1m </p>
+                                        </td>
+                                        <td> <span>{{record.descripcion }}</span> </td>
+                                        <td class="text-end"> <span> {{record.moneda | myCurrency}} {{ record.deposito | number : '4.2' }}</span> </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ng-template>
+
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">My uploads</a>
+
+                <!-- ======================================================================
+                    MY UPLOADS TAB
+                ===========================================================================-->
+                <li class="nav-item" [ngbNavItem]="2">
+                    <a ngbNavLink>My uploads</a>
+                    <ng-template ngbNavContent>
+
+                        <div class=" front-div bg-light shadow p-3 table-responsive">
+                            <table class="table ">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">File name </th>
+                                        <th scope="col">Size </th>
+                                        <th scope="col">Batch type </th>
+                                        <th scope="col"># of batches </th>
+                                        <th scope="col">Uploaded on </th>
+                                        <th scope="col">Status </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let batch of batches;let i = index;">
+                                        <td> <span>{{batch.file!.name}}</span> </td>
+                                        <td> <span>{{batch.file!.size}} KB</span> </td>
+                                        <td> <span>{{batch.type}}</span> </td>
+                                        <td> <span>1</span> </td>
+                                        <td> <span>{{batch.uploadedOn| date: 'medium'}}</span> </td>
+                                        <td> <span>Processed</span> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav> -->
+                        </div>
+                    </ng-template>
                 </li>
             </ul>
+
+            <div [ngbNavOutlet]="nav" class="mt-2"></div>
         </div>
     </div>
-</div>
-
-<div class="container front-div bg-light shadow pb-3 table-responsive">
-    <table class="table ">
-        <thead>
-            <tr>
-                <th scope="col">File name </th>
-                <th scope="col">Size </th>
-                <th scope="col">Batch type </th>
-                <th scope="col"># of batches </th>
-                <th scope="col">Uploaded on </th>
-                <th scope="col">Status </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let file of files;let i = index;">
-                <td> <span>{{file.name}}</span> </td>
-                <td> <span>{{file.size}} KB</span> </td>
-                <td> <span>Backbase SEPA</span> </td>
-                <td> <span>1</span> </td>
-                <td> <span>{{dateNow | date: 'medium'}}</span> </td>
-                <td> <span>Processed</span> </td>
-            </tr>
-        </tbody>
-    </table>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="">1</a></li>
-            <li class="page-item"><a class="page-link" href="">2</a></li>
-            <li class="page-item"><a class="page-link" href="">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
 </div>

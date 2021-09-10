@@ -57,15 +57,15 @@ export class AppComponent implements OnInit{
     const csvArr = [];
 
     for (let i = 1; i < csvRecordsArray.length; i++) {
-      const curruntRecord = ( csvRecordsArray[i] as string).split(',');
+      const currentRecord = ( csvRecordsArray[i] as string).split(',');
 
-      if (curruntRecord.length === headerLength) {
+      if (currentRecord.length === headerLength) {
         const csvRecord: CSVRecord = new CSVRecord();
-        csvRecord.cuenta = curruntRecord[0].trim();
-        csvRecord.cuentaFinal = curruntRecord[1].trim();
-        csvRecord.moneda = curruntRecord[2].trim();
-        csvRecord.descripcion = curruntRecord[3].trim();
-        csvRecord.deposito = curruntRecord[4].trim();
+        csvRecord.cuenta = currentRecord[0].trim();
+        csvRecord.cuentaFinal = currentRecord[1].trim();
+        csvRecord.moneda = currentRecord[2].trim();
+        csvRecord.descripcion = currentRecord[3].trim();
+        csvRecord.deposito = currentRecord[4].trim();
         csvArr.push(csvRecord);
       }
     }
@@ -85,10 +85,6 @@ export class AppComponent implements OnInit{
     for (const header of headers) {
       headerArray.push(header);
     }
-
-    // for (let j = 0; j < headers.length; j++) {
-    //   headerArray.push(headers[j]);
-    // }
     return headerArray;
   }
 
